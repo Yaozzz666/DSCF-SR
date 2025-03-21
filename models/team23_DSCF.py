@@ -206,13 +206,13 @@ class Conv3XC(nn.Module):
         return out 
 
 
-class SPAB1(nn.Module):
+class SPAB(nn.Module):
     def __init__(self,
                  in_channels,
                  mid_channels=None,
                  out_channels=None,
                  bias=False):
-        super(SPAB1, self).__init__()
+        super(SPAB, self).__init__()
         if mid_channels is None:
             mid_channels = in_channels
         if out_channels is None:
@@ -263,12 +263,12 @@ class DSCF(nn.Module):
         self.mean = torch.Tensor(rgb_mean).view(1, 3, 1, 1)
 
         self.conv_1 = Conv3XC(in_channels, feature_channels, gain1=2, s=1)
-        self.block_1 = SPAB1(feature_channels, bias=bias)
-        self.block_2 = SPAB1(feature_channels, bias=bias)
-        self.block_3 = SPAB1(feature_channels, bias=bias)
-        self.block_4 = SPAB1(feature_channels, bias=bias)
-        self.block_5 = SPAB1(feature_channels, bias=bias)
-        self.block_6 = SPAB1(feature_channels, bias=bias)
+        self.block_1 = SPAB(feature_channels, bias=bias)
+        self.block_2 = SPAB(feature_channels, bias=bias)
+        self.block_3 = SPAB(feature_channels, bias=bias)
+        self.block_4 = SPAB(feature_channels, bias=bias)
+        self.block_5 = SPAB(feature_channels, bias=bias)
+        self.block_6 = SPAB(feature_channels, bias=bias)
 
         self.conv_cat = conv_layer(feature_channels * 4, feature_channels, kernel_size=1, bias=True)
         self.conv_2 = Conv3XC(feature_channels, feature_channels, gain1=2, s=1)
@@ -293,33 +293,33 @@ class DSCF(nn.Module):
         
         # self.mark_only_lora_as_trainable(bias='none')
         # 分层LoRA配置字典（模块名: (r, lora_alpha)）
-        self.lora_config = {
-            # 高频重建核心层 (最高优先级)
-            "conv_2.eval_conv": (8, 16),  # 最大秩
-            "upsampler.0": (8, 16),       # 高秩
+        # self.lora_config = {
+        #     # 高频重建核心层 (最高优先级)
+        #     "conv_2.eval_conv": (8, 16),  # 最大秩
+        #     "upsampler.0": (8, 16),       # 高秩
             
-            # 中间处理层 (梯度传播关键路径)
-            **{f"block_{i}.c{j}_r.eval_conv": (2, 4) 
-            for i in [2,3,4,5]          # block_2到block_5
-            for j in [1,2,3]},          # 每个block的三个卷积
+        #     # 中间处理层 (梯度传播关键路径)
+        #     **{f"block_{i}.c{j}_r.eval_conv": (2, 4) 
+        #     for i in [2,3,4,5]          # block_2到block_5
+        #     for j in [1,2,3]},          # 每个block的三个卷积
             
-            # 首尾层 (适度调整)
-            "block_1.c1_r.eval_conv": (2, 4),
-            "block_1.c2_r.eval_conv": (2, 4),
-            "block_1.c3_r.eval_conv": (2, 4),
-            "block_6.c1_r.eval_conv": (2, 4),
-            "block_6.c2_r.eval_conv": (2, 4),
-            "block_6.c3_r.eval_conv": (2, 4),
-        }
+        #     # 首尾层 (适度调整)
+        #     "block_1.c1_r.eval_conv": (2, 4),
+        #     "block_1.c2_r.eval_conv": (2, 4),
+        #     "block_1.c3_r.eval_conv": (2, 4),
+        #     "block_6.c1_r.eval_conv": (2, 4),
+        #     "block_6.c2_r.eval_conv": (2, 4),
+        #     "block_6.c3_r.eval_conv": (2, 4),
+        # }
         
-        # 替换需要 LoRA 处理的层
-        self.replace_layers_with_strategy()
+        # # 替换需要 LoRA 处理的层
+        # self.replace_layers_with_strategy()
         
         # 冻结非LoRA参数
-        self.mark_only_lora_as_trainable(bias='none')
+        # self.mark_only_lora_as_trainable(bias='none')
         # self.cuda()(torch.randn(1, 3, 256, 256).cuda())
         # self.eval().cuda()
-        self.cuda()
+        self.eval().cuda()
         input_tensor = torch.randn(1, 3, 256, 256).cuda()
         output = self(input_tensor)
         # 确保 LoRA 层参数可训练
@@ -329,55 +329,55 @@ class DSCF(nn.Module):
         #         print(f"{name}: {param.shape}")
                 
 
-    def replace_layers_with_strategy(self):
-        """根据分层策略替换卷积层"""
-        for full_name, (r, alpha) in self.lora_config.items():
-            parent, child_name = self._get_parent_and_child(full_name)
-            if parent is None:
-                # print(f"⚠️ Skip {full_name}: module not found")
-                continue
+    # def replace_layers_with_strategy(self):
+    #     """根据分层策略替换卷积层"""
+    #     for full_name, (r, alpha) in self.lora_config.items():
+    #         parent, child_name = self._get_parent_and_child(full_name)
+    #         if parent is None:
+    #             # print(f"⚠️ Skip {full_name}: module not found")
+    #             continue
                 
-            original_conv = getattr(parent, child_name, None)
-            if not isinstance(original_conv, nn.Conv2d):
-                # print(f"⚠️ {full_name} is not Conv2d (found {type(original_conv)})")
-                continue
+    #         original_conv = getattr(parent, child_name, None)
+    #         if not isinstance(original_conv, nn.Conv2d):
+    #             # print(f"⚠️ {full_name} is not Conv2d (found {type(original_conv)})")
+    #             continue
                 
-            # 动态设置参数
-            new_layer = Lora_Conv2d(
-                in_channels=original_conv.in_channels,
-                out_channels=original_conv.out_channels,
-                kernel_size=original_conv.kernel_size[0],
-                stride=original_conv.stride,
-                padding=original_conv.padding,
-                bias=original_conv.bias is not None,
-                r=r,  # 动态设置秩
-                lora_alpha=alpha  # 动态设置缩放系数
-            )
+    #         # 动态设置参数
+    #         new_layer = Lora_Conv2d(
+    #             in_channels=original_conv.in_channels,
+    #             out_channels=original_conv.out_channels,
+    #             kernel_size=original_conv.kernel_size[0],
+    #             stride=original_conv.stride,
+    #             padding=original_conv.padding,
+    #             bias=original_conv.bias is not None,
+    #             r=r,  # 动态设置秩
+    #             lora_alpha=alpha  # 动态设置缩放系数
+    #         )
             
-            # 继承原始权重
-            with torch.no_grad():
-                new_layer.weight.copy_(original_conv.weight)
-                if original_conv.bias is not None:
-                    new_layer.bias.copy_(original_conv.bias)
+    #         # 继承原始权重
+    #         with torch.no_grad():
+    #             new_layer.weight.copy_(original_conv.weight)
+    #             if original_conv.bias is not None:
+    #                 new_layer.bias.copy_(original_conv.bias)
             
-            setattr(parent, child_name, new_layer)
-            # print(f"✅ {full_name} => r={r}, alpha={alpha}")
+    #         setattr(parent, child_name, new_layer)
+    #         # print(f"✅ {full_name} => r={r}, alpha={alpha}")
 
-    def _get_parent_and_child(self, module_name):
-        """
-        获取模块的父级模块和子模块名称
-        例如：
-        module_name = "block_5.c1_r.eval_conv"
-        则返回 (model.block_5.c1_r, "eval_conv")
-        """
-        parts = module_name.split(".")
-        parent = self
-        for part in parts[:-1]:  # 遍历到倒数第二个
-            if hasattr(parent, part):
-                parent = getattr(parent, part)
-            else:
-                return None, None  # 没找到路径
-        return parent, parts[-1]  # 返回父模块和子模块名称
+    # def _get_parent_and_child(self, module_name):
+    #     """
+    #     获取模块的父级模块和子模块名称
+    #     例如：
+    #     module_name = "block_5.c1_r.eval_conv"
+    #     则返回 (model.block_5.c1_r, "eval_conv")
+    #     """
+    #     parts = module_name.split(".")
+    #     parent = self
+    #     for part in parts[:-1]:  # 遍历到倒数第二个
+    #         if hasattr(parent, part):
+    #             parent = getattr(parent, part)
+    #         else:
+    #             return None, None  # 没找到路径
+    #     return parent, parts[-1]  # 返回父模块和子模块名称
 
     # def replace_layers(self, desired_submodules):
     #     """
@@ -401,37 +401,37 @@ class DSCF(nn.Module):
     #                 lora_alpha=2
     #             ))
                                     
-    def mark_only_lora_as_trainable(self, bias: str = 'none'):
-        """
-        只训练 LoRA 相关参数，而冻结所有其他参数。
+    # def mark_only_lora_as_trainable(self, bias: str = 'none'):
+    #     """
+    #     只训练 LoRA 相关参数，而冻结所有其他参数。
         
-        参数:
-        - bias: 'none' (不训练 bias), 'all' (训练所有 bias), 'lora_only' (只训练 LoRA 层的 bias)
-        """
-        # 冻结所有非 LoRA 参数
-        # for n, p in self.named_parameters():
-        #     if 'lora_' not in n:
-        #         p.requires_grad = False
-        for n, p in self.named_parameters():
-            if 'lora_' not in n:  
-                p.requires_grad = False  # 冻结非 LoRA 参数
-            else:
-                p.requires_grad = True  # 解冻 LoRA 参数
+    #     参数:
+    #     - bias: 'none' (不训练 bias), 'all' (训练所有 bias), 'lora_only' (只训练 LoRA 层的 bias)
+    #     """
+    #     # 冻结所有非 LoRA 参数
+    #     # for n, p in self.named_parameters():
+    #     #     if 'lora_' not in n:
+    #     #         p.requires_grad = False
+    #     for n, p in self.named_parameters():
+    #         if 'lora_' not in n:  
+    #             p.requires_grad = False  # 冻结非 LoRA 参数
+    #         else:
+    #             p.requires_grad = True  # 解冻 LoRA 参数
 
-        if bias == 'none':
-            return
-        elif bias == 'all':
-            for n, p in self.named_parameters():
-                if 'bias' in n:
-                    p.requires_grad = True
-        elif bias == 'lora_only':
-            for m in self.modules():
-                if isinstance(m, LoRALayer) and hasattr(m, 'bias') and m.bias is not None:
-                    m.bias.requires_grad = True
-        else:
-            raise NotImplementedError(f"未知 bias 选项: {bias}")
+    #     if bias == 'none':
+    #         return
+    #     elif bias == 'all':
+    #         for n, p in self.named_parameters():
+    #             if 'bias' in n:
+    #                 p.requires_grad = True
+    #     elif bias == 'lora_only':
+    #         for m in self.modules():
+    #             if isinstance(m, LoRALayer) and hasattr(m, 'bias') and m.bias is not None:
+    #                 m.bias.requires_grad = True
+    #     else:
+    #         raise NotImplementedError(f"未知 bias 选项: {bias}")
     def forward(self, x, return_features=False):
-        features = []
+        # features = []
         self.mean = self.mean.type_as(x)
         x = (x - self.mean) * self.img_range
 
@@ -449,15 +449,15 @@ class DSCF(nn.Module):
         out = self.conv_cat(torch.cat([out_feature, out_b6, out_b1, out_b5_2], 1))
         output = self.upsampler(out)
         
-        features.append(out_b1_1)
-        features.append(out_b1_2)
-        features.append(out_b1_3)
-        features.append(out_b2_1)
-        features.append(out_b2_2)
-        features.append(out_b2_3)
-        features.append(out_b3_1)
-        features.append(out_b3_2)
-        features.append(out_b3_3)
+        # features.append(out_b1_1)
+        # features.append(out_b1_2)
+        # features.append(out_b1_3)
+        # features.append(out_b2_1)
+        # features.append(out_b2_2)
+        # features.append(out_b2_3)
+        # features.append(out_b3_1)
+        # features.append(out_b3_2)
+        # features.append(out_b3_3)
  
 
         if return_features:
