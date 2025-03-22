@@ -1,9 +1,17 @@
+<!--
+ * @Author: Yaozzz666
+ * @Date: 2025-03-21 13:49:25
+ * @LastEditors: Yaozzz666
+ * @LastEditTime: 2025-03-22 11:11:04
+ * 
+ * Copyright (c) 2025 by ${Yaozzz666}, All Rights Reserved. 
+-->
 # [NTIRE 2025 Challenge on Efficient Super-Resolution](https://cvlai.net/ntire/2025/) @ [CVPR 2025](https://cvpr.thecvf.com/)
 
 ## Distillation Supervised ConvLora Finetuning for SR
 
 <div align=center>
-<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="400px"/> 
+<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="800px"/> 
 </div>
 
 - An overview of out DSCF-SR
