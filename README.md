@@ -14,7 +14,7 @@
 <img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="800px"/> 
 </div>
 
-- An overview of out DSCF-SR
+- An overview of our DSCF-SR
 
 ## The Environments
 
