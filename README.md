@@ -39,10 +39,10 @@ or take it as a reference based on your original environments.
 
 ```python
     from utils.model_summary import get_model_flops, get_model_activation
-    from models.team00_EFDN import EFDN
+    from models.team23_DSCF import DSCF
     from fvcore.nn import FlopCountAnalysis
 
-    model = EFDN()
+    model = DSCF(3,3,feature_channels=26,upscale=4)
     
     input_dim = (3, 256, 256)  # set the input dimension
     activations, num_conv = get_model_activation(model, input_dim)
