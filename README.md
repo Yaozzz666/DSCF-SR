@@ -11,7 +11,7 @@
 ## Distillation Supervised ConvLora Finetuning for SR
 
 <div align=center>
-<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="800px"/> 
+<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="1000px"/> 
 </div>
 
 - An overview of our DSCF-SR
