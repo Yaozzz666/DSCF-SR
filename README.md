@@ -22,14 +22,13 @@
 
 
 
-## The Architecture of DSCF-SR Model
+## The Architecture of DSCF Model
 <div align=center>
-<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCLoRA_arch.png" width="1000px"/> 
+<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="1000px"/> 
 </div>
-### 
-<div align=center>
-<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCLoRA_arch.png" width="1000px"/> 
-</div>
+We replace the SPAB module with the proposed SConvLB module and incorporate
+ConvLoRA layers into both the pixel shuffle block and its preceding convolutional layer. Spatial Affinity Distillation Loss is calculated
+between each feature map.
 
 ## The Environments
 
