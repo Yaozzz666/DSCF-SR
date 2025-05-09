@@ -22,7 +22,7 @@
 
 
 
-## 📖 The Architecture of DSCF Model
+## 📖 The Architecture of DSCLoRA Model
 <div align=center>
 <img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch_new.png" width="1000px"/> 
 </div>
