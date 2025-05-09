@@ -31,8 +31,10 @@ ConvLoRA layers into both the pixel shuffle block and its preceding convolutiona
 between each feature map.
 
 ## 🚀 Updates
-* [2025.04] 
-* [2025.03] ✅ Release our code here
+* [2025.04.21] ✅ Upload our model on [Hugging Face](https://huggingface.co/sssefe/DSCLoRA) 🤗.
+* [2025.04.15] 🎉 Our [paper](https://arxiv.org/abs/2504.11271) is accepted to CVPR 2025 Workshop!
+* [2025.03.26] 🏆 Our team won **1st** place in the [NTIRE 2025 Efficient SR Challenge](https://cvlai.net/ntire/2025/). Challenge report is [here](https://arxiv.org/abs/2504.10686).
+* [2025.03.21] ✅ Release our code here.
 ## 🔧 The Environments
 
 The evaluation environments adopted by us is recorded in the `requirements.txt`. After you built your own basic Python (Python = 3.9 in our setting) setup via either *virtual environment* or *anaconda*, please try to keep similar to it via:
@@ -83,5 +85,17 @@ or take it as a reference based on your original environments.
     print("{:>16s} : {:<.4f} [M]".format("#Params", num_parameters))
 ```
 
-## License and Acknowledgement
+## 🥰 Citation
+If our work is useful to you, please use the following BibTeX for citation.
+
+```
+@inproceedings{Chai2025DistillationSupervisedCL,
+  title={Distillation-Supervised Convolutional Low-Rank Adaptation for Efficient Image Super-Resolution},
+  author={Xinning Chai and Yao Zhang and Yuxuan Zhang and Zhengxue Cheng and Yingsheng Qin and Yucai Yang and Li Song},
+  year={2025},
+  url={https://api.semanticscholar.org/CorpusID:277787382}
+}
+```
+
+## 📜 License and Acknowledgement
 This code repository is release under [MIT License](LICENSE). 
