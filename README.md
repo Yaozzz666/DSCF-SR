@@ -24,9 +24,12 @@
 
 ## The Architecture of DSCF-SR Model
 <div align=center>
-<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="1000px"/> 
+<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCLoRA_arch.png" width="1000px"/> 
 </div>
-
+### 
+<div align=center>
+<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCLoRA_arch.png" width="1000px"/> 
+</div>
 
 ## The Environments
 
