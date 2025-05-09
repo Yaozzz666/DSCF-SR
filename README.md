@@ -6,15 +6,27 @@
  * 
  * Copyright (c) 2025 by ${Yaozzz666}, All Rights Reserved. 
 -->
-# [NTIRE 2025 Challenge on Efficient Super-Resolution](https://cvlai.net/ntire/2025/) @ [CVPR 2025](https://cvpr.thecvf.com/)
+ 
 
-## Distillation Supervised ConvLora Finetuning for SR
+<h1 align="center">
+  <a href="https://arxiv.org/abs/2504.11271">
+    Distillation-Supervised Convolutional Low-Rank Adaptation for Efficient Image Super-Resolution
+  </a>
+</h1>
 
+<div align="center">
+  <a href="https://arxiv.org/abs/2504.11271" style="text-decoration:none;">
+    <img src="https://img.shields.io/badge/cs.CV-2504.11271-%23B22222" alt="cs.CV">
+  </a>
+</div>
+
+
+
+## The Architecture of DSCF-SR Model
 <div align=center>
 <img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="1000px"/> 
 </div>
 
-- An overview of our DSCF-SR
 
 ## The Environments
 
