@@ -22,15 +22,18 @@
 
 
 
-## The Architecture of DSCF Model
+## 📖 The Architecture of DSCF Model
 <div align=center>
-<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch.png" width="1000px"/> 
+<img src="https://github.com/Yaozzz666/DSCF-SR/blob/main/figs/DSCF_arch_new.png" width="1000px"/> 
 </div>
 We replace the SPAB module with the proposed SConvLB module and incorporate
 ConvLoRA layers into both the pixel shuffle block and its preceding convolutional layer. Spatial Affinity Distillation Loss is calculated
 between each feature map.
 
-## The Environments
+## 🚀 Updates
+* [2025.04] 
+* [2025.03] ✅ Release our code here
+## 🔧 The Environments
 
 The evaluation environments adopted by us is recorded in the `requirements.txt`. After you built your own basic Python (Python = 3.9 in our setting) setup via either *virtual environment* or *anaconda*, please try to keep similar to it via:
 
