@@ -31,6 +31,7 @@ ConvLoRA layers into both the pixel shuffle block and its preceding convolutiona
 between each feature map.
 
 ## 🚀 Updates
+* [2025.06.11] 🎉 Our work is give a **oral presentation** at the NTIRE 2025 workshop at CVPR.
 * [2025.04.21] ✅ Upload our model on [Hugging Face](https://huggingface.co/sssefe/DSCLoRA) 🤗.
 * [2025.04.15] 🎉 Our [paper](https://arxiv.org/abs/2504.11271) is accepted to CVPR 2025 Workshop!
 * [2025.03.26] 🏆 Our team won **1st** place in the [NTIRE 2025 Efficient SR Challenge](https://cvlai.net/ntire/2025/). Challenge report is [here](https://arxiv.org/abs/2504.10686).
